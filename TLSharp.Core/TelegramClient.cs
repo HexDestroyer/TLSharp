@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,16 +47,13 @@ namespace TLSharp.Core
             }
 
             _sender = new MtProtoSender(_transport, _session);
+            
+            var request = new InitConnectionRequest(_apiId);
 
-            if (!reconnect)
-            {
-                var request = new InitConnectionRequest(_apiId);
+            await _sender.Send(request);
+            await _sender.Recieve(request);
 
-                await _sender.Send(request);
-                await _sender.Recieve(request);
-
-                dcOptions = request.ConfigConstructor.dc_options;
-            }
+            dcOptions = request.ConfigConstructor.dc_options;
 
             return true;
         }
@@ -241,9 +238,35 @@ namespace TLSharp.Core
             return request.messages;
         }
 
+        public async Task<List<User>> GetUserContactList(string ContactsHash = "")
+        {
+            var request = new GetContactsRequest(ContactsHash);
+            await _sender.Send(request);
+            await _sender.Recieve(request);
+
+            return request.users;
+        }
+
+        public async Task<List<Contact>> GetUserContactListAsContactType(string ContactsHash = "")
+        {
+            var request = new GetContactsRequest(ContactsHash);
+            await _sender.Send(request);
+            await _sender.Recieve(request);
+            return request.contacts;
+        }
+
+        public async Task<List<User>> GetUsersDetailsFromList(List<InputUser> id)
+        {
+            var request = new GetUsersRequest(id);
+            await _sender.Send(request);
+            await _sender.Recieve(request);
+
+            return request.users;
+        }
+        
         private bool validateNumber(string number)
         {
-            var regex = new Regex("^\\d{7,20}$");
+            var regex = new Regex("^([+]{0,1})([\\d]{7,20})$");
 
             return regex.IsMatch(number);
         }
