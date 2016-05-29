@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
@@ -19,9 +19,9 @@ namespace TLSharp.Tests
 
         private string UserNameToSendMessage { get; set; }
 
-        private string apiHash = "";
+        private string apiHash = "64933aad3cb49339e5b03bb5a0d0a741";
 
-        private int apiId = 0;
+        private int apiId = 39514;
 
         [TestInitialize]
         public void Init()
@@ -196,6 +196,33 @@ namespace TLSharp.Tests
 
                 Assert.IsNotNull(authKey.AuthKey.Data);
             }
+        }
+
+        [TestMethod]
+        public async Task GetUsers()
+        {
+            // User should be already authenticated!
+
+            var store = new FileSessionStore();
+            var client = new TelegramClient(store, "session", apiId, apiHash);
+            await client.Connect();
+
+            Assert.IsTrue(client.IsUserAuthorized());
+
+            var contacts = await client.GetUserContactListAsContactType();
+
+            Assert.IsNotNull(contacts);
+            
+            System.Collections.Generic.List<InputUser> id = new System.Collections.Generic.List<InputUser>();
+            foreach (var contact in contacts)
+            {
+                var c = ((TLSharp.Core.MTProto.ContactConstructor)contact).user_id;
+                id.Add(new InputUserContactConstructor(((TLSharp.Core.MTProto.ContactConstructor)contact).user_id));
+            }
+
+            var users = await client.GetUsersDetailsFromList(id);
+            
+            Assert.IsNotNull(users);
         }
     }
 }
