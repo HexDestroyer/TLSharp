@@ -49,7 +49,6 @@ namespace TLSharp.Core
             _sender = new MtProtoSender(_transport, _session);
             
             var request = new InitConnectionRequest(_apiId);
-
             await _sender.Send(request);
             await _sender.Recieve(request);
 
