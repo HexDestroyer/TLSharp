@@ -75,6 +75,9 @@ namespace TLSharp.Core.MTProto
         userStatusEmpty,
         userStatusOnline,
         userStatusOffline,
+        userStatusRecently,
+        userStatusLastWeek,
+        userStatusLastMonth,
         chatEmpty,
         chat,
         chatForbidden,
@@ -339,6 +342,9 @@ namespace TLSharp.Core.MTProto
             {0x09d05049, typeof (UserStatusEmptyConstructor)},
             {0xedb93949, typeof (UserStatusOnlineConstructor)},
             {0x008c703f, typeof (UserStatusOfflineConstructor)},
+            {0xe26f42f1, typeof (UserStatusRecentlyConstructor)},
+            {0x07bf09fc, typeof (UserStatusLastWeekConstructor)},
+            {0x77ebc742, typeof (UserStatusLastMonthConstructor)},
             {0x9ba2d800, typeof (ChatEmptyConstructor)},
             {0x6e9c9bc7, typeof (ChatConstructor)},
             {0xfb0ccc41, typeof (ChatForbiddenConstructor)},
@@ -896,6 +902,21 @@ namespace TLSharp.Core.MTProto
         public static UserStatus userStatusOffline(int was_online)
         {
             return new UserStatusOfflineConstructor(was_online);
+        }
+
+        public static UserStatus userStatusRecently()
+        {
+            return new UserStatusRecentlyConstructor();
+        }
+
+        public static UserStatus userStatusLastWeek()
+        {
+            return new UserStatusLastWeekConstructor();
+        }
+
+        public static UserStatus userStatusLastMonth()
+        {
+            return new UserStatusLastMonthConstructor();
         }
 
         public static Chat chatEmpty(int id)
@@ -4786,7 +4807,100 @@ namespace TLSharp.Core.MTProto
             return String.Format("(userStatusOffline was_online:{0})", was_online);
         }
     }
+    
 
+    public class UserStatusRecentlyConstructor : UserStatus
+    {
+
+        public UserStatusRecentlyConstructor()
+        {
+
+        }
+
+
+
+        public override Constructor Constructor
+        {
+            get { return Constructor.userStatusRecently; }
+        }
+
+        public override void Write(BinaryWriter writer)
+        {
+            writer.Write(0xe26f42f1);
+        }
+
+        public override void Read(BinaryReader reader)
+        {
+        }
+
+        public override string ToString()
+        {
+            return String.Format("(userStatusRecently)");
+        }
+    }
+
+
+    public class UserStatusLastWeekConstructor : UserStatus
+    {
+
+        public UserStatusLastWeekConstructor()
+        {
+
+        }
+
+
+
+        public override Constructor Constructor
+        {
+            get { return Constructor.userStatusLastWeek; }
+        }
+
+        public override void Write(BinaryWriter writer)
+        {
+            writer.Write(0x07bf09fc);
+        }
+
+        public override void Read(BinaryReader reader)
+        {
+        }
+
+        public override string ToString()
+        {
+            return String.Format("(userStatusLastWeek)");
+        }
+    }
+
+
+    public class UserStatusLastMonthConstructor : UserStatus
+    {
+
+        public UserStatusLastMonthConstructor()
+        {
+
+        }
+
+
+
+        public override Constructor Constructor
+        {
+            get { return Constructor.userStatusLastMonth; }
+        }
+
+        public override void Write(BinaryWriter writer)
+        {
+            writer.Write(0x77ebc742);
+        }
+
+        public override void Read(BinaryReader reader)
+        {
+        }
+
+        public override string ToString()
+        {
+            return String.Format("(userStatusLastMonth)");
+        }
+    }
+    
 
     public class ChatEmptyConstructor : Chat
     {
